@@ -2,9 +2,11 @@
 from datetime import timedelta
 
 from odoo import models, fields, api, exceptions, _
-    
+
+
 class Session(models.Model):
     _name = 'openacademy.session'
+    _description = 'Sessions'
     _order = 'course_id, instructor_id, start_date desc, id'
 
     name = fields.Char(required=True)

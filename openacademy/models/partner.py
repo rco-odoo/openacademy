@@ -19,7 +19,7 @@ class Partner(models.Model):
         string="Five next Sessions", readonly=True, compute='_compute_next_session_ids')
     full_session_count = fields.Many2many('openacademy.session',
         string="Full Sessions", readonly=True, compute='_compute_full_session_ids')
-    
+
     @api.depends('session_ids')
     def _compute_next_session_ids(self):
         for partner in self:

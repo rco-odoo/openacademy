@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-from datetime import timedelta
-
 from odoo import models, fields, api, _
-from odoo.tools import populate
 
 
 class Course(models.Model):
     _name = 'openacademy.course'
+    _description = 'Courses'
     _order = 'responsible_id, name'
 
     name = fields.Char(string="Title", required=True)
@@ -23,14 +21,14 @@ class Course(models.Model):
         default = dict(default or {})
 
         copied_count = self.search_count(
-            [('name', '=like', _(u"Copy of {}%").format(self.name))])
+            [('name', '=like', _("Copy of %s%%", self.name))])
         if not copied_count:
-            new_name = _(u"Copy of {}").format(self.name)
+            new_name = _("Copy of %s", self.name)
         else:
-            new_name = _(u"Copy of {} ({})").format(self.name, copied_count)
+            new_name = _("Copy of %s (%s)", self.name, copied_count)
 
         default['name'] = new_name
-        return super(Course, self).copy(default)
+        return super().copy(default)
     
     @api.depends('session_ids')
     def _compute_session_stats(self):
@@ -55,4 +53,3 @@ class Course(models.Model):
          'UNIQUE(name)',
          "The course title must be unique"),
     ]
-    
