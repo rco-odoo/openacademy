@@ -3,8 +3,8 @@ from odoo import models
 from odoo.addons.base.populate.res_partner import Partner
 from odoo.tools import populate
 
-import names
 import random
+
 
 class Course(models.Model):
     _inherit = "openacademy.course"
@@ -15,13 +15,14 @@ class Course(models.Model):
         user_ids = self.env.registry.populated_models["res.users"]
 
         def get_name(values=None, counter=0, **kwargs):
-            return  '%s_%s' % ('course', counter)
+            return f"course_{counter}"
         
         return [
             ("name", populate.compute(get_name)),
             ("responsible_id", populate.randomize(user_ids)),
         ]
-    
+
+
 class Session(models.Model):
     _inherit = "openacademy.session"
     _populate_dependencies = ["openacademy.course", "res.partner"]
@@ -32,11 +33,10 @@ class Session(models.Model):
         course_ids = self.env.registry.populated_models["openacademy.course"]
 
         def get_name(values=None, counter=0, **kwargs):
-            return  '%s_%s' % ('session', counter)
+            return f"session_{counter}"
         
         def get_attendee_ids(values=None, counter=0, **kwargs):
             return [random.choice(partner_ids) for n in range(2, 20)]
-        
         
         return [
             ("name", populate.compute(get_name)),
@@ -54,8 +54,8 @@ class Session(models.Model):
 
     def _populate_set_instructor(self, records):
         for record in records:
-            inst = record.attendee_ids[0]
+            instructor = record.attendee_ids[0]
             record.attendee_ids = record.attendee_ids[1:]
-            record.instructor_id = inst
-            if record.seats<len(record.attendee_ids):
+            record.instructor_id = instructor
+            if record.seats < len(record.attendee_ids):
                 record.seats = len(record.attendee_ids)
